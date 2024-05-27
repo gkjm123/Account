@@ -214,7 +214,6 @@ class TransactionServiceTest {
         given(accountRepository.findByAccountNumber(anyString()))
                 .willReturn(Optional.of(account));
 
-        ArgumentCaptor<Transaction> captor = ArgumentCaptor.forClass(Transaction.class);
 
         //when
         AccountException exception = assertThrows(AccountException.class,
