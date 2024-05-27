@@ -1,14 +1,9 @@
 package com.example.account.dto;
 
-import com.example.account.domain.Account;
 import com.example.account.domain.Transaction;
 import com.example.account.type.TransactionResultType;
 import com.example.account.type.TransactionType;
-import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.resource.transaction.spi.TransactionStatus;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
 

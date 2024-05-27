@@ -3,7 +3,6 @@ package com.example.account.dto;
 import com.example.account.type.TransactionResultType;
 import com.example.account.type.TransactionType;
 import lombok.*;
-import org.springframework.context.annotation.Configuration;
 
 import java.time.LocalDateTime;
 

@@ -1,6 +1,5 @@
 package com.example.account.dto;
 
-import com.example.account.domain.Account;
 import lombok.*;
 
 @Getter
