@@ -6,9 +6,7 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
-
 public class CreateAccount {
-
     @Getter
     @Setter
     @AllArgsConstructor
@@ -40,5 +38,4 @@ public class CreateAccount {
                     .build();
         }
     }
-
 }

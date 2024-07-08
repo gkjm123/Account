@@ -7,9 +7,7 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
-
 public class CancelBalance {
-
     @Getter
     @Setter
     @AllArgsConstructor
@@ -49,5 +47,4 @@ public class CancelBalance {
                     .build();
         }
     }
-
 }

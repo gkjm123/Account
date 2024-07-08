@@ -27,9 +27,10 @@ public class AccountService {
     @Transactional
     public AccountDto createAccount(Long userId, Long initialBalance) {
         AccountUser accountUser = getAccountUser(userId);
-
+        //계좌 생성 가능 체크
         validateCreateAccount(accountUser);
 
+        //생성된 계좌가 없으면 1000000000 으로 첫 생성, 있으면 가장 최근 생성된 계좌번호 +1 해서 새 계좌 생성
         String newAccountNumber = accountRepository.findFirstByOrderByIdDesc()
                 .map(account -> (Integer.parseInt(account.getAccountNumber())) + 1 + "")
                 .orElse("1000000000");
@@ -46,6 +47,7 @@ public class AccountService {
     }
 
     private void validateCreateAccount(AccountUser accountUser) {
+        //한 유저당 계좌 10개만 소유 가능
         if(accountRepository.countByAccountUser(accountUser) == 10) {
             throw new AccountException(MAX_ACCOUNT_PER_USER_10);
         }
@@ -56,7 +58,6 @@ public class AccountService {
         return accountRepository.findById(id).get();
     }
 
-
     @Transactional
     public AccountDto deleteAccount(Long userId, String accountNumber) {
         AccountUser accountUser = getAccountUser(userId);
@@ -64,23 +65,27 @@ public class AccountService {
         Account account = accountRepository.findByAccountNumber(accountNumber)
                 .orElseThrow(() -> new AccountException(ACCOUNT_NOT_FOUND));
 
+        //계좌 삭제가 가능한지 확인후 계좌를 UNREGISTERED 상태로 바꿈
         validateDeleteAccount(accountUser, account);
-
         account.setAccountStatus(AccountStatus.UNREGISTERED);
         account.setUnRegisteredAt(LocalDateTime.now());
 
         accountRepository.save(account);
-
         return AccountDto.fromEntity(account);
     }
 
     private void validateDeleteAccount(AccountUser accountUser, Account account) {
+        //계좌 소유주 일치 확인
         if(!Objects.equals(accountUser.getId(), account.getAccountUser().getId())) {
             throw new AccountException(USER_ACCOUNT_UN_MATCH);
         }
+
+        //계좌가 등록 상태인지 확인
         if(account.getAccountStatus() == AccountStatus.UNREGISTERED) {
             throw new AccountException(ACCOUNT_ALREADY_UNREGISTERED);
         }
+
+        //잔액이 0원 이어야 계좌 삭제 가능
         if(account.getBalance() > 0) {
             throw new AccountException(BALANCE_NOT_EMPTY);
         }
@@ -89,7 +94,6 @@ public class AccountService {
     @Transactional
     public List<AccountDto> getAccountsByUserId(Long userId) {
         AccountUser accountUser = getAccountUser(userId);
-
         List<Account> accounts = accountRepository.findByAccountUser(accountUser);
 
         return accounts.stream()

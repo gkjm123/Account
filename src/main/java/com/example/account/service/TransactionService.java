@@ -38,25 +38,26 @@ public class TransactionService {
 
     @Transactional
     public TransactionDto useBalance(Long userId, String accountNumber, Long amount) {
-
         AccountUser user = accountUserRepository.findById(userId)
                 .orElseThrow(() -> new AccountException(ErrorCode.USER_NOT_FOUND));
 
         Account account = accountRepository.findByAccountNumber(accountNumber)
                         .orElseThrow(() -> new AccountException(ACCOUNT_NOT_FOUND));
 
+        //계좌 소유주 맞는지, 계좌 상태 정상인지 체크
         validateUseBalance(user, account);
-
+        //계좌에서 금액 사용(계좌 잔액보다 큰 금액 사용하려는지 체크)
         account.useBalance(amount);
 
+        //거래 내역을 저장하고 Dto 반환
         return TransactionDto.fromEntity(saveAndGetTransaction(USE, S, amount, account));
-
     }
 
     private void validateUseBalance(AccountUser user, Account account) {
         if(!Objects.equals(user.getId(), account.getAccountUser().getId())) {
             throw new AccountException(ErrorCode.USER_ACCOUNT_UN_MATCH);
         }
+
         if(account.getAccountStatus() != AccountStatus.IN_USE) {
             throw new AccountException(ErrorCode.ACCOUNT_ALREADY_UNREGISTERED);
         }
@@ -71,12 +72,13 @@ public class TransactionService {
 
     }
 
+    //거래를 저장하고 Dto 반환
     private Transaction saveAndGetTransaction(
             TransactionType transactionType,
             TransactionResultType transactionResultType,
             Long amount,
-            Account account) {
-
+            Account account
+    ) {
         return transactionRepository.save(
                 Transaction.builder()
                         .transactionType(transactionType)
@@ -97,24 +99,29 @@ public class TransactionService {
     ) {
         Transaction transaction = transactionRepository.findByTransactionId(transactionId)
                 .orElseThrow(() -> new AccountException(TRANSACTION_NOT_FOUND));
+
         Account account = accountRepository.findByAccountNumber(accountNumber)
                 .orElseThrow(() -> new AccountException(ACCOUNT_NOT_FOUND));
 
         validateCancelBalance(transaction, account, amount);
-
         account.cancelBalance(amount);
 
-        return TransactionDto.fromEntity(
-                saveAndGetTransaction(CANCEL, S, amount, account));
+        return TransactionDto.fromEntity(saveAndGetTransaction(CANCEL, S, amount, account));
     }
 
+    //거래 취소 가능여부 체크
     private void validateCancelBalance(Transaction transaction, Account account, Long amount) {
+        //거래의 생성자가 맞는지
         if(!Objects.equals(transaction.getAccount().getId(), account.getId())) {
             throw new AccountException(ErrorCode.TRANSACTION_ACCOUNT_UN_MATCH);
         }
+
+        //취소하려는 금액은 거래 금액과 같아야함(금액 부분 취소 불가)
         if(!Objects.equals(transaction.getAmount(), amount)) {
             throw new AccountException(ErrorCode.CANCEL_MUST_FULLY);
         }
+
+        //1년 이상 지난 거래는 취소 불가
         if(transaction.getTransactedAt().isBefore(LocalDateTime.now().minusYears(1))) {
             throw new AccountException(ErrorCode.TOO_OLD_ORDER_TO_CANCEL);
         }

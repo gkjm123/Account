@@ -7,9 +7,7 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
-
 public class UseBalance {
-
     @Getter
     @Setter
     @AllArgsConstructor
@@ -52,5 +50,4 @@ public class UseBalance {
                     .build();
         }
     }
-
 }

@@ -1,6 +1,5 @@
 package com.example.account.config;
 
-
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import org.springframework.beans.factory.annotation.Value;

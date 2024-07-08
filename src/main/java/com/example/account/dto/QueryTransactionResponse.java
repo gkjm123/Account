@@ -29,5 +29,4 @@ public class QueryTransactionResponse {
                 .transactionId(transactionDto.getTransactionId())
                 .build();
     }
-
 }

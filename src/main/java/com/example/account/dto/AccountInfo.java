@@ -10,5 +10,4 @@ import lombok.*;
 public class AccountInfo {
     private String accountNumber;
     private Long balance;
-
 }

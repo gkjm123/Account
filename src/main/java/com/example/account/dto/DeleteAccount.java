@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 
 
 public class DeleteAccount {
-
     @Getter
     @Setter
     @AllArgsConstructor
@@ -22,7 +21,6 @@ public class DeleteAccount {
         @NotBlank
         @Size(min = 10, max = 10)
         private String accountNumber;
-
     }
 
     @Getter
@@ -43,5 +41,4 @@ public class DeleteAccount {
                     .build();
         }
     }
-
 }

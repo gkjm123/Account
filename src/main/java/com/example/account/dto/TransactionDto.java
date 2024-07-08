@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class TransactionDto {
-
     private String accountNumber;
     private TransactionType transactionType;
     private TransactionResultType transactionResultType;
@@ -33,5 +32,4 @@ public class TransactionDto {
                 .transactionId(transaction.getTransactionId())
                 .build();
     }
-
 }
