@@ -1,7 +1,11 @@
 package com.example.account.domain;
 
 import jakarta.persistence.Entity;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter
@@ -10,5 +14,6 @@ import lombok.*;
 @Builder
 @Entity
 public class AccountUser extends BaseEntity {
-    private String name;
+
+  private String name;
 }

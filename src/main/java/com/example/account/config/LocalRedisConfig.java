@@ -8,21 +8,22 @@ import redis.embedded.RedisServer;
 
 @Configuration
 public class LocalRedisConfig {
-    @Value("${spring.data.redis.port}")
-    private int redisPort;
 
-    private RedisServer redisServer;
+  @Value("${spring.data.redis.port}")
+  private int redisPort;
 
-    @PostConstruct
-    public void startRedis() {
-        redisServer = new RedisServer(redisPort);
-        redisServer.start();
+  private RedisServer redisServer;
+
+  @PostConstruct
+  public void startRedis() {
+    redisServer = new RedisServer(redisPort);
+    redisServer.start();
+  }
+
+  @PreDestroy
+  public void stopRedis() {
+    if (redisServer != null) {
+      redisServer.stop();
     }
-
-    @PreDestroy
-    public void stopRedis() {
-        if(redisServer != null) {
-            redisServer.stop();
-        }
-    }
+  }
 }
